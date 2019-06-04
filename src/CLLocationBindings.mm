@@ -13,12 +13,14 @@ void getCurrentPosition(const FunctionCallbackInfo<Value>& args) {
 
   LocationManager* locationManager = [[LocationManager alloc] init];
 
+  Local<Context> context = Context::New(isolate);
+
   if (args.Length() == 1) {
     if (args[0]->IsObject()) {
       Local<Object> options = args[0]->ToObject();
 
       Local<String> maximumAgeKey = String::NewFromUtf8(isolate, "maximumAge");
-      if (options->Has(maximumAgeKey)) {
+      if (options->Has(context, maximumAgeKey).FromMaybe(false)) {
         // Anything less than 100ms doesn't make any sense
         locationManager.maximumAge = fmax(
           100, options->Get(maximumAgeKey)->NumberValue()
@@ -29,7 +31,7 @@ void getCurrentPosition(const FunctionCallbackInfo<Value>& args) {
       Local<String> enableHighAccuracyKey = String::NewFromUtf8(
         isolate, "enableHighAccuracy"
       );
-      if (options->Has(enableHighAccuracyKey)) {
+      if (options->Has(context, enableHighAccuracyKey).FromMaybe(false)) {
         locationManager.enableHighAccuracy = options->Get(
           enableHighAccuracyKey
         )->BooleanValue();
@@ -38,7 +40,7 @@ void getCurrentPosition(const FunctionCallbackInfo<Value>& args) {
       Local<String> timeout = String::NewFromUtf8(
         isolate, "timeout"
       );
-      if (options->Has(timeout)) {
+      if (options->Has(context, timeout).FromMaybe(false)) {
         locationManager.timeout = options->Get(timeout)->NumberValue();
       }
 
@@ -123,7 +125,7 @@ void getCurrentPosition(const FunctionCallbackInfo<Value>& args) {
   args.GetReturnValue().Set(obj);
 }
 
-void Initialise(Handle<Object> exports) {
+void Initialise(Local<Object> exports) {
   NODE_SET_METHOD(exports, "getCurrentPosition", getCurrentPosition);
 }
 
