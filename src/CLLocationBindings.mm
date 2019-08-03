@@ -17,13 +17,13 @@ void getCurrentPosition(const FunctionCallbackInfo<Value>& args) {
 
   if (args.Length() == 1) {
     if (args[0]->IsObject()) {
-      Local<Object> options = args[0]->ToObject();
+      Local<Object> options = args[0]->ToObject(context).ToLocalChecked();
 
       Local<String> maximumAgeKey = String::NewFromUtf8(isolate, "maximumAge");
       if (options->Has(context, maximumAgeKey).FromMaybe(false)) {
         // Anything less than 100ms doesn't make any sense
         locationManager.maximumAge = fmax(
-          100, options->Get(maximumAgeKey)->NumberValue()
+          100, options->Get(maximumAgeKey)->NumberValue(context).ToChecked()
         );
         locationManager.maximumAge /= 1000.0;
       }
@@ -34,14 +34,14 @@ void getCurrentPosition(const FunctionCallbackInfo<Value>& args) {
       if (options->Has(context, enableHighAccuracyKey).FromMaybe(false)) {
         locationManager.enableHighAccuracy = options->Get(
           enableHighAccuracyKey
-        )->BooleanValue();
+        )->BooleanValue(context).ToChecked();
       }
 
       Local<String> timeout = String::NewFromUtf8(
         isolate, "timeout"
       );
       if (options->Has(context, timeout).FromMaybe(false)) {
-        locationManager.timeout = options->Get(timeout)->NumberValue();
+        locationManager.timeout = options->Get(timeout)->NumberValue(context).ToChecked();
       }
 
     }
