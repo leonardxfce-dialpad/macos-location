@@ -19,7 +19,9 @@ void getCurrentPosition(const FunctionCallbackInfo<Value>& args) {
     if (args[0]->IsObject()) {
       Local<Object> options = args[0]->ToObject(context).ToLocalChecked();
 
-      Local<String> maximumAgeKey = String::NewFromUtf8(isolate, "maximumAge");
+      Local<String> maximumAgeKey = String::NewFromUtf8(
+        isolate, "maximumAge"
+      ).ToLocalChecked();
       if (options->Has(context, maximumAgeKey).FromMaybe(false)) {
         // Anything less than 100ms doesn't make any sense
         locationManager.maximumAge = fmax(
@@ -30,16 +32,16 @@ void getCurrentPosition(const FunctionCallbackInfo<Value>& args) {
 
       Local<String> enableHighAccuracyKey = String::NewFromUtf8(
         isolate, "enableHighAccuracy"
-      );
+      ).ToLocalChecked();
       if (options->Has(context, enableHighAccuracyKey).FromMaybe(false)) {
         locationManager.enableHighAccuracy = options->Get(
           enableHighAccuracyKey
-        )->BooleanValue(context).ToChecked();
+        )->BooleanValue(isolate);
       }
 
       Local<String> timeout = String::NewFromUtf8(
         isolate, "timeout"
-      );
+      ).ToLocalChecked();
       if (options->Has(context, timeout).FromMaybe(false)) {
         locationManager.timeout = options->Get(timeout)->NumberValue(context).ToChecked();
       }
@@ -50,7 +52,7 @@ void getCurrentPosition(const FunctionCallbackInfo<Value>& args) {
   if (![CLLocationManager locationServicesEnabled]) {
     isolate->ThrowException(
       Exception::TypeError(
-        String::NewFromUtf8(isolate, "CLocationErrorNoLocationService")
+        String::NewFromUtf8(isolate, "CLocationErrorNoLocationService").ToLocalChecked()
       )
     );
     return;
@@ -66,28 +68,28 @@ void getCurrentPosition(const FunctionCallbackInfo<Value>& args) {
               String::NewFromUtf8(
                 isolate,
                 "CLocationErrorLocationServiceDenied"
-              )
+              ).ToLocalChecked()
             )
         );
         return;
       case kCLErrorGeocodeCanceled:
         isolate->ThrowException(
             Exception::TypeError(
-              String::NewFromUtf8(isolate, "CLocationErrorGeocodeCanceled")
+              String::NewFromUtf8(isolate, "CLocationErrorGeocodeCanceled").ToLocalChecked()
             )
         );
         return;
       case kCLErrorLocationUnknown:
         isolate->ThrowException(
             Exception::TypeError(
-              String::NewFromUtf8(isolate, "CLocationErrorLocationUnknown")
+              String::NewFromUtf8(isolate, "CLocationErrorLocationUnknown").ToLocalChecked()
             )
         );
         return;
       default:
         isolate->ThrowException(
             Exception::TypeError(
-              String::NewFromUtf8(isolate, "CLocationErrorLookupFailed")
+              String::NewFromUtf8(isolate, "CLocationErrorLookupFailed").ToLocalChecked()
             )
         );
         return;
@@ -96,29 +98,29 @@ void getCurrentPosition(const FunctionCallbackInfo<Value>& args) {
 
   Local<Object> obj = Object::New(isolate);
   obj->Set(
-    String::NewFromUtf8(isolate, "latitude"),
+    String::NewFromUtf8(isolate, "latitude").ToLocalChecked(),
     Number::New(isolate, location.coordinate.latitude)
   );
   obj->Set(
-    String::NewFromUtf8(isolate, "longitude"),
+    String::NewFromUtf8(isolate, "longitude").ToLocalChecked(),
     Number::New(isolate, location.coordinate.longitude)
   );
   obj->Set(
-    String::NewFromUtf8(isolate, "altitude"),
+    String::NewFromUtf8(isolate, "altitude").ToLocalChecked(),
     Number::New(isolate, location.altitude)
   );
   obj->Set(
-    String::NewFromUtf8(isolate, "horizontalAccuracy"),
+    String::NewFromUtf8(isolate, "horizontalAccuracy").ToLocalChecked(),
     Number::New(isolate, location.horizontalAccuracy)
   );
   obj->Set(
-    String::NewFromUtf8(isolate, "verticalAccuracy"),
+    String::NewFromUtf8(isolate, "verticalAccuracy").ToLocalChecked(),
     Number::New(isolate, location.verticalAccuracy)
   );
 
   NSTimeInterval seconds = [location.timestamp timeIntervalSince1970];
   obj->Set(
-    String::NewFromUtf8(isolate, "timestamp"),
+    String::NewFromUtf8(isolate, "timestamp").ToLocalChecked(),
     Number::New(isolate, (NSInteger)ceil(seconds * 1000))
   );
 
