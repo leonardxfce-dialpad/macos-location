@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/jsynowiec/macos-location",
   "dependencies": {
-    "node-gyp": "^3.6.2"
+    "nan": "^2.14.2",
+    "node-gyp": "^7.1.2"
   }
 }
