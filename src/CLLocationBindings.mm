@@ -25,7 +25,7 @@ void getCurrentPosition(const Nan::FunctionCallbackInfo<v8::Value>& args) {
 			}
 
 			v8::Local<v8::String> enableHighAccuracyKey = v8::String::NewFromUtf8(
-				isolate, 
+				isolate,
 				"enableHighAccuracy"
 			).ToLocalChecked();
 			if (options->Has(context, enableHighAccuracyKey).FromMaybe(false)) {
@@ -124,7 +124,7 @@ void getCurrentPosition(const Nan::FunctionCallbackInfo<v8::Value>& args) {
 }
 
 void Initialise(v8::Local<v8::Object> exports) {
-	v8::Local<v8::Context> context = exports->CreationContext();
+	v8::Local<v8::Context> context = exports->GetCreationContext().ToLocalChecked();
 	exports->Set(
 		context,
 		Nan::New("getCurrentPosition").ToLocalChecked(),

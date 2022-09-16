@@ -19,7 +19,7 @@
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "engines": {
-    "node": ">=6.9.0"
+    "node": ">=16"
   },
   "scripts": {
     "build": "node-gyp rebuild"
@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/jsynowiec/macos-location",
   "dependencies": {
-    "nan": "^2.14.2",
-    "node-gyp": "^7.1.2"
+    "nan": "github:tec27/nan#remove_accessor_signature",
+    "node-gyp": "^9.1.0"
   }
 }
